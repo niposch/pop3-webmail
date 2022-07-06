@@ -1,0 +1,75 @@
+### Invalid Authentication Test
+POST localhost:5000/api/authenticate?username=username&password=password&url=taurus.informatik.tu-chemnitz.de:110
+
+401 Unauthorized
+
+<> 2022-07-06T210441.401.html
+<> 2022-07-06T210419.401.html
+
+### Authenticate
+POST localhost:5000/api/authenticate?username=rot&password=rot&url=taurus.informatik.tu-chemnitz.de:110
+
+> {%
+client.test("Authentication succesful", () =>{
+    // check if cookie was set
+    client.log(response.headers.valuesOf("Set-Cookie")[0]);
+    client.assert(response.headers.valuesOf("Set-Cookie")[0] == "url=taurus.informatik.tu-chemnitz.de:110; Path=/", "domain wrong")
+    client.assert(response.headers.valuesOf("Set-Cookie")[1] == "username=rot; Path=/", "username wrong")
+    client.assert(response.headers.valuesOf("Set-Cookie")[2] == "password=rot; Path=/", "password wrong")
+})
+ %}
+
+<> 2022-07-06T210441.200.html
+<> 2022-07-06T210419.200.html
+<> 2022-07-06T210306.200.html
+<> 2022-07-06T210219.200.html
+<> 2022-07-06T210154.200.html
+<> 2022-07-06T210133.200.html
+<> 2022-07-06T210105.200.html
+<> 2022-07-06T210029.200.html
+<> 2022-07-06T210020.200.html
+<> 2022-07-06T210019.200.html
+<> 2022-07-06T205930.200.html
+<> 2022-07-06T205929.200.html
+<> 2022-07-06T205852.200.html
+<> 2022-07-06T205851.200.html
+<> 2022-07-06T205844.200.html
+<> 2022-07-06T205820.200.html
+<> 2022-07-06T205819.200.html
+<> 2022-07-06T205611.200.html
+<> 2022-07-06T205439.200.html
+<> 2022-07-06T205427.200.html
+<> 2022-07-06T205342.200.html
+<> 2022-07-06T205235.200.html
+<> 2022-07-06T205224.200.html
+<> 2022-07-06T204726.401.html
+<> 2022-07-06T204319.200.html
+<> 2022-07-06T204159.200.html
+<> 2022-07-06T204135.200.html
+
+
+### Get Email Information
+
+GET localhost:5000/api/emails
+
+<> 2022-07-06T210441-1.200.html
+<> 2022-07-06T210420.200.html
+<> 2022-07-06T210306-1.200.html
+<> 2022-07-06T210219-1.200.html
+<> 2022-07-06T210154-1.200.html
+<> 2022-07-06T210133-1.200.html
+<> 2022-07-06T210105-1.200.html
+<> 2022-07-06T210030.200.html
+<> 2022-07-06T210020-1.200.html
+<> 2022-07-06T210019-1.200.html
+<> 2022-07-06T205931.200.html
+<> 2022-07-06T205929-1.200.html
+<> 2022-07-06T205852-1.200.html
+<> 2022-07-06T205851-1.200.html
+<> 2022-07-06T205820-1.200.html
+<> 2022-07-06T205819-1.200.html
+<> 2022-07-06T204726.200.html
+<> 2022-07-06T204711.200.html
+<> 2022-07-06T204451.200.html
+
+### Get Email Details
