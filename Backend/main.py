@@ -1,3 +1,5 @@
+import os
+
 from dotenv import load_dotenv
 import re
 import poplib
@@ -78,5 +80,11 @@ def get_emails():
 
 
 if __name__ == '__main__':
-    app.run(port=8080, debug=True)
+    dev_port = os.getenv("DEV_PORT", 8081)
+    prod_port = os.getenv("PROD_PORT", 8080)
+    is_dev = bool(os.getenv("Development", "false"))
+    port = prod_port
+    if is_dev:
+        port = dev_port
+    app.run(port=port, debug=is_dev)
 
