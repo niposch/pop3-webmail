@@ -3,9 +3,40 @@ import os
 from dotenv import load_dotenv
 import re
 import poplib
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, redirect, url_for, send_from_directory
 
-app = Flask(__name__)
+if __name__ == '__main__':
+    load_dotenv()
+    dev_port = os.getenv("DEV_PORT", 8081)
+    prod_port = os.getenv("PROD_PORT", 8080)
+    fe_port = os.getenv("FRONTEND_DEV_PORT", 8080)
+    is_dev = os.getenv("IS_DEVELOPMENT", "false").lower() == "true"
+    port = prod_port
+    if is_dev:
+        print("Development Mode Enabled. This will only start the backend.")
+        print("You might want to run npm run start in the frontend folder.")
+        port = dev_port
+        static_folder = "static"
+
+        app = Flask(__name__, static_folder=static_folder, static_url_path="")
+        # setup redirect to the frontend
+        @app.route('/')
+        def redirect_handler():
+            return redirect(f'http://127.0.0.1:{fe_port}',302)
+    else:
+        fe_dist = os.getenv("FRONTEND_PROD_DIST_FOLDER", "../Frontend/dist/Frontend")
+        static_folder = fe_dist
+        if not os.path.exists(fe_dist):
+            raise Exception("Frontend dist folder not found!\nYou might want to run 'npm i && npm run build' from ../Frontend.\n")
+        app = Flask(__name__, static_folder=static_folder, static_url_path="")
+        @app.route("/")
+        def index():
+            return send_from_directory(fe_dist, "index.html")
+        @app.route('/<path:path>')
+        def serve(path):
+            # serve from directory
+            return send_from_directory(fe_dist, path)
+
 
 def setup_poplib(address:str, username:str, password:str):
     address_regex = r'^([-a-zA-Z0-9@%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@%_\+.~#?&\/=]*))(?:\:((?:6553[0-5])|(?:655[0-2][0-9])|(?:65[0-4][0-9]{2})|(?:6[0-4][0-9]{3})|(?:[1-5][0-9]{4})|(?:[0-5]{0,5})|(?:[0-9]{1,4})))?'
@@ -31,7 +62,6 @@ def setup_poplib(address:str, username:str, password:str):
     return m
 
 
-load_dotenv()
 @app.post("/api/authenticate")
 def authenticate():
     url = request.args.get("url")
@@ -78,13 +108,6 @@ def get_emails():
     return str(numMessages)
 
 
-
 if __name__ == '__main__':
-    dev_port = os.getenv("DEV_PORT", 8081)
-    prod_port = os.getenv("PROD_PORT", 8080)
-    is_dev = bool(os.getenv("Development", "false"))
-    port = prod_port
-    if is_dev:
-        port = dev_port
     app.run(port=port, debug=is_dev)
 
