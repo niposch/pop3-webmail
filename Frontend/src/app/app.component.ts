@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Frontend';
   navOpened: boolean = true;
+  selected: string = "";
 
   test() {
     console.log('test');

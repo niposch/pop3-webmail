@@ -1,5 +1,5 @@
 ### Invalid Authentication Test
-POST localhost:5000/api/authenticate?username=username&password=password&url=taurus.informatik.tu-chemnitz.de:110
+POST localhost:8081/api/authenticate?username=username&password=password&url=taurus.informatik.tu-chemnitz.de:110
 
 401 Unauthorized
 
@@ -7,17 +7,9 @@ POST localhost:5000/api/authenticate?username=username&password=password&url=tau
 <> 2022-07-06T210419.401.html
 
 ### Authenticate
-POST localhost:5000/api/authenticate?username=rot&password=rot&url=taurus.informatik.tu-chemnitz.de:110
+POST localhost:8081/api/authenticate?username=rot&password=rot&url=taurus.informatik.tu-chemnitz.de:110
 
-> {%
-client.test("Authentication succesful", () =>{
-    // check if cookie was set
-    client.log(response.headers.valuesOf("Set-Cookie")[0]);
-    client.assert(response.headers.valuesOf("Set-Cookie")[0] == "url=taurus.informatik.tu-chemnitz.de:110; Path=/", "domain wrong")
-    client.assert(response.headers.valuesOf("Set-Cookie")[1] == "username=rot; Path=/", "username wrong")
-    client.assert(response.headers.valuesOf("Set-Cookie")[2] == "password=rot; Path=/", "password wrong")
-})
- %}
+200
 
 <> 2022-07-06T210441.200.html
 <> 2022-07-06T210419.200.html
@@ -50,7 +42,7 @@ client.test("Authentication succesful", () =>{
 
 ### Get Email Information
 
-GET localhost:5000/api/emails
+GET localhost:8081/api/emails?username=rot&password=rot&url=taurus.informatik.tu-chemnitz.de:110
 
 <> 2022-07-06T210441-1.200.html
 <> 2022-07-06T210420.200.html
