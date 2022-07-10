@@ -48,10 +48,21 @@ export class AuthService {
   }
   private static getEmailsForServer(server:EmailServer, self:AuthService):Observable<Array<Email>>{
     return self.http
-      .get<Array<Email>>(`http://localhost:8080/api/emails?username=${server.username}&password=${server.password}&url=${server.url}`)
+      .get<Array<Email>>(`http://localhost:8080/api/emails`, {params:{
+        username:server.username,
+        password:server.password,
+        url:server.url,
+        usessl: server.useSSL ? "true": "false"
+
+        }})
       .pipe(map(result => {
-        // @ts-ignore
-        result.forEach(e => e.date = new Date(Date.parse(e.date)));
+        result = result.map(e => {
+          // @ts-ignore
+          e = parseJson(e)
+          // @ts-ignore
+          e.date = new Date(Date.parse(e.date.$date))
+          return e
+        });
         return result;
 
       }))
@@ -69,7 +80,7 @@ export class AuthService {
     return outp
   }
   updateServer(server: EmailServer, newCheckedState:boolean) {
-    let currentServer = this.servers.find(s => s.url == server.url && s.username == server.username && s.password == server.password);
+    let currentServer = this.servers.find(s => s.url == server.url && s.username == server.username && s.password == server.password && s.useSSL == server.useSSL)
     if(currentServer == null){
       return;
     }
@@ -83,19 +94,20 @@ export class AuthService {
     this.storeServers(this.servers);
     this.serverChange.emit(this.servers);
   }
-  login(userName:string, password:string, popUrl:string, displayName:string, symbol:string):Observable<any>{
+  login(userName:string, password:string, popUrl:string, displayName:string, symbol:string, useSSL:boolean):Observable<any>{
     return this.http.post('api/authenticate', null,
       {params:{
         username:userName,
         password:password,
         url:popUrl,
+          usessl: useSSL ? "true": "false",
         },
         responseType:"text"
     })
       .pipe(tap(() => {
         this.isUserLoggedIn = true;
         console.log("User logged in");
-        this.addServer({username:userName,password:password,url:popUrl,selected:true, displayName: displayName, symbol: symbol});
+        this.addServer({username:userName,password:password,url:popUrl,selected:true, displayName: displayName, symbol: symbol, useSSL: useSSL})
       }))
   }
   removeServer(server:EmailServer){

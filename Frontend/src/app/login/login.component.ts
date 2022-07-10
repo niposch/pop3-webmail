@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
   url: string = "";
   password: string = "";
   userName: string = "";
+  useSSL:boolean = false;
 
   constructor(private readonly authService:AuthService, private readonly router:Router ) { }
 
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   }
 
   submit() {
-    this.authService.login(this.userName, this.password, this.url, this.displayName, "").subscribe({
+    this.authService.login(this.userName, this.password, this.url, this.displayName, "", this.useSSL).subscribe({
       next:() => {
         this.router.navigate(["/"], {})
 

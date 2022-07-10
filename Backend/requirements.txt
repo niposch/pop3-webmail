@@ -1,2 +1,4 @@
 python-dotenv~=0.20.0
 Flask~=2.1.2
+flanker~=0.9.11
+pymongo~=4.1.1

@@ -1,4 +1,4 @@
-<form class="d-flex flex-column" (ngSubmit)="this.submit()">
+<form class="d-flex p-3 flex-column" (ngSubmit)="this.submit()">
     <mat-form-field>
       <mat-label>Username</mat-label>
       <input matInput name="userName" [(ngModel)]="this.userName">
@@ -11,9 +11,13 @@
       <mat-label>Server Uri</mat-label>
       <input matInput [(ngModel)]="this.url" name="url">
     </mat-form-field>
-    <mat-form-field>
-      <mat-label>Display Name</mat-label>
-      <input matInput [(ngModel)]="this.displayName" name="displayName">
-    </mat-form-field>
+    <div class="d-flex align-items-center">
+      <mat-label>Use SSL</mat-label>
+      <mat-checkbox style="margin-left: auto" [(ngModel)]="this.useSSL" name="useSSL"></mat-checkbox>
+    </div>
+  <mat-form-field>
+    <mat-label>Display Name</mat-label>
+    <input matInput [(ngModel)]="this.displayName" name="displayName">
+  </mat-form-field>
   <button mat-raised-button>Login</button>
 </form>

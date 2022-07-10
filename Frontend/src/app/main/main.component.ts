@@ -11,8 +11,8 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class MainComponent implements OnInit {
 
-  dataSource = new MatTableDataSource<Email>();
-  displayedColumns: string[] = ['sender', 'subject', "date"]
+  dataSource:MatTableDataSource<Email> = new MatTableDataSource<Email>();
+  displayedColumns: string[] = ['sender', 'subject', "date", "receiver"]
   isLoading: boolean = true;
   constructor(private readonly authService:AuthService) {
     this.authService.serverChange.subscribe((servers:EmailServer[]) => {
@@ -32,7 +32,14 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  extractName(sender: string): string {
-    return sender.split("<")[0];
+  extractName(sender: Array<string>): string {
+    if (sender.length == 0) {
+      return "";
+    }
+    if (sender.length == 1) {
+      return sender[0];
+    }
+    return sender[1]
+
   }
 }

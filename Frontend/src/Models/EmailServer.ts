@@ -6,4 +6,5 @@ export interface EmailServer {
   symbol:string;
   selected:boolean;
   displayName:string;
+  useSSL:boolean;
 }
