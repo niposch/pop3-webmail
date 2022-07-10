@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../auth.service";
 import {Router} from "@angular/router";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ export class LoginComponent implements OnInit {
   userName: string = "";
   useSSL:boolean = false;
 
-  constructor(private readonly authService:AuthService, private readonly router:Router ) { }
+  constructor(private readonly authService:AuthService, private readonly router:Router,
+              public loginRef: MatDialogRef<LoginComponent>) { }
 
   ngOnInit(): void {
   }
@@ -22,8 +24,7 @@ export class LoginComponent implements OnInit {
   submit() {
     this.authService.login(this.userName, this.password, this.url, this.displayName, "", this.useSSL).subscribe({
       next:() => {
-        this.router.navigate(["/"], {})
-
+        this.loginRef.close();
       },
       error:(e) => {
         console.log(e)
@@ -31,5 +32,8 @@ export class LoginComponent implements OnInit {
       }
     });
 
+  }
+  onCancel() {
+    this.loginRef.close();
   }
 }

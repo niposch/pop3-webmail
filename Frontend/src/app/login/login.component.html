@@ -19,5 +19,6 @@
     <mat-label>Display Name</mat-label>
     <input matInput [(ngModel)]="this.displayName" name="displayName">
   </mat-form-field>
-  <button mat-raised-button>Login</button>
+  <button mat-raised-button color="primary">Login</button>
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
 </form>

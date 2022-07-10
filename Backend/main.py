@@ -2,6 +2,7 @@ import datetime
 import multiprocessing
 import quopri
 import os
+import threading
 from multiprocessing import Pool
 from queue import Queue
 
@@ -20,6 +21,7 @@ if __name__ == '__main__':
     port = os.getenv("PORT", 8081)
     is_dev = os.getenv("IS_DEVELOPMENT", "false").lower() == "true"
     app = Flask(__name__)
+    sem = threading.Semaphore(1)
 
 
     def setup_poplib(address: str, username: str, password: str, isSSL: bool):
@@ -65,19 +67,20 @@ if __name__ == '__main__':
 
     @app.post("/api/authenticate")
     def authenticate():
-        url = request.args.get("url")
-        password = request.args.get("password")
-        username = request.args.get("username")
-        isSSL = request.args.get("usessl", "false").lower() == "true"
-        if url == None or password == None or username == None:
-            return "bad request", 400
-        try:
-            m = setup_poplib(url, username, password, isSSL)
-        except:
-            return "invalid credentials", 401
-        m.quit()
-        # store the credentials in a cookie
-        return "authenticated", 200
+        with sem:
+            url = request.args.get("url")
+            password = request.args.get("password")
+            username = request.args.get("username")
+            isSSL = request.args.get("usessl", "false").lower() == "true"
+            if url == None or password == None or username == None:
+                return "bad request", 400
+            try:
+                m = setup_poplib(url, username, password, isSSL)
+            except:
+                return "invalid credentials", 401
+            m.quit()
+            # store the credentials in a cookie
+            return "authenticated", 200
 
 
     def chunks(start, end, chunkSize:int):
@@ -102,30 +105,35 @@ if __name__ == '__main__':
         if url == None or password == None or username == None:
             return "bad request", 400
 
-        try:
-            m = setup_poplib(url, username, password, isSSL)
-        except:
-            try_invalidate_cache(url, username, password, isSSL)
-            return "invalid credentials", 401
+        with sem:
+            try:
+                m = setup_poplib(url, username, password, isSSL)
+            except:
+                try_invalidate_cache(url, username, password, isSSL)
+                return "invalid credentials", 401
 
-        # try get from cache
-        if useCache:
-            emails = try_get_from_cache(url, username, password, isSSL, 24 * 60 * 60)
-            if emails != None:
-                return jsonify(emails), 200
+            # try get from cache
+            if useCache:
+                emails = try_get_from_cache(url, username, password, isSSL, 24 * 60 * 60)
+                if emails != None:
+                    if len(emails) == len(m.list()[1]):
+                        return jsonify(emails), 200
+                    else:
+                        try_invalidate_cache(url, username, password, isSSL)
+                        emails = None
 
-        messages = []
-        # retrieve the messages
-        if limit is None:
-            limit = len(m.list()[1])
-            default_limit = limit
-        if limit > len(m.list()[1]):
-            limit = len(m.list()[1])
+            messages = []
+            # retrieve the messages
+            if limit is None:
+                limit = len(m.list()[1])
+                default_limit = limit
+            if limit > len(m.list()[1]):
+                limit = len(m.list()[1])
 
-        retrieveds = []
-        for i in range(1, limit):
-            retrieveds.append((url, i, m.retr(i)))
-            print(f"downloaded #{i}")
+            retrieveds = []
+            for i in range(1, limit+1):
+                retrieveds.append((url, i, m.retr(i)))
+                print(f"downloaded #{i}")
         with Pool(processes=multiprocessing.cpu_count()) as pool:
             messages = pool.map(parseEmail, retrieveds)
         if limit == default_limit and offset == default_offset:

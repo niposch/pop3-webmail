@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {EmailServer} from "../../Models/EmailServer";
 import {AuthService} from "../auth.service";
+import {MatDialog} from "@angular/material/dialog";
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-nav',
@@ -10,7 +12,7 @@ import {AuthService} from "../auth.service";
 export class NavComponent implements OnInit {
   servers: Array<EmailServer> | null = null;
 
-  constructor(readonly authService:AuthService) { }
+  constructor(readonly authService:AuthService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.servers = this.authService.getAllServers()
@@ -19,4 +21,10 @@ export class NavComponent implements OnInit {
     )
   }
 
+  openLogin() {
+    const loginRef = this.dialog.open(LoginComponent, {})
+    loginRef.afterClosed().subscribe(result => {
+      this.authService.loadServers();
+    });
+  }
 }

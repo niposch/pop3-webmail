@@ -36,10 +36,22 @@ export class MainComponent implements OnInit {
     if (sender.length == 0) {
       return "";
     }
-    if (sender.length == 1) {
-      return sender[0];
+    return sender[0]
+  }
+
+  extractEmail(sender: Array<string>):string {
+
+    if (sender == null || sender == undefined || sender.length == 0) {
+      return "";
+    }
+    if(sender.length == 1) {
+      return sender[0]
     }
     return sender[1]
 
+  }
+
+  displayEmailPopup(row:Email) {
+    console.log(row)
   }
 }
