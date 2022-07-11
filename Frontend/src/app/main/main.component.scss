@@ -17,8 +17,8 @@
 .mat-column-sender{
 word-wrap: break-word !important;
   white-space: unset !important;
-  flex: 1 0 25% !important;
-  width: 25% !important;
+  flex: 1 0 15% !important;
+  width: 15% !important;
   overflow-wrap: break-word;
   word-wrap: break-word;
 
@@ -30,5 +30,6 @@ word-wrap: break-word !important;
   hyphens: auto;
 }
 .mat-column-date{
-  flex: 0 0 140px
+  flex: 0 0 10% !important;
+  width: 10% !important;
 }

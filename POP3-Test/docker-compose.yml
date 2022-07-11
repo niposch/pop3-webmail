@@ -1,8 +1,0 @@
-
-version: "3.9"
-services:
-  pop3-mock:
-    image: "greenmail/standalone"
-    ports:
-      - "12995:3995"
-      - "12110:3110"

@@ -32,7 +32,9 @@ export class EmailDetailsComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
+  toMailto(email:string){
+    return "mailto:" + email;
+  }
   extractName(sender: Array<string>) {
     return extractName(sender)
   }
