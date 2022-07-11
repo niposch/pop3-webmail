@@ -7,6 +7,7 @@ import {EmailDetailsComponent} from "../email-details/email-details.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import DOMPurify from "dompurify";
+import {extractName, extractEmail} from "../../helper/EmailAddressHelper";
 
 @Component({
   selector: 'app-main',
@@ -36,28 +37,15 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  extractName(sender: Array<string>): string {
-    if (sender.length == 0) {
-      return "";
-    }
-    return sender[0]
-  }
-
-  extractEmail(sender: Array<string>):string {
-
-    if (sender == null || sender == undefined || sender.length == 0) {
-      return "";
-    }
-    if(sender.length == 1) {
-      return sender[0]
-    }
-    return sender[1]
-
-  }
-
-
   displayEmailPopup(email:Email) {
     this.dialog.open(EmailDetailsComponent, {data: email})
+  }
+
+  extractEmail(sender: any) {
+    return extractEmail(sender);
+  }
+  extractName(sender: any) {
+    return extractName(sender);
   }
 }
 

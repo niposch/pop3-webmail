@@ -17,7 +17,7 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     this.servers = this.authService.getAllServers()
     this.authService.serverChange.subscribe((servers) =>
-      this.servers = servers
+      this.servers = servers[0]
     )
   }
 

@@ -27,6 +27,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from "@angular/material/dialog";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { EmailDetailsComponent } from './email-details/email-details.component';
+import {MatExpansionModule} from "@angular/material/expansion";
 
 const routes = [
   { path: 'login', component: LoginComponent },
@@ -63,6 +64,7 @@ const routes = [
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,
+    MatExpansionModule,
   ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}

@@ -1,5 +1,6 @@
 
 export interface EmailServer {
+  cacheDate: Date | null;
   username: string;
   password: string;
   url:string;
